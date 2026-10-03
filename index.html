@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prática – brasiliansk portugisisk</title>
+<style>
+:root{
+  --green:#0a7a4a; --green-d:#075a37; --green-l:#e6f4ec;
+  --yellow:#f6c945; --yellow-l:#fff7da;
+  --blue:#1f3d8a; --red:#c0392b; --red-l:#fdecea;
+  --bg:#f5f7f4; --card:#fff; --text:#1f2a24; --muted:#6b7a71; --border:#dfe6e1;
+  --radius:14px; --shadow:0 2px 10px rgba(10,60,35,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45;-webkit-text-size-adjust:100%}
+header{background:linear-gradient(135deg,var(--green) 0%,var(--green-d) 100%);color:#fff;padding:14px 16px 0;position:sticky;top:0;z-index:10;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:10px;max-width:760px;margin:0 auto}
+.brand .logo{width:34px;height:34px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;flex:none}
+.brand .logo span{display:block;width:16px;height:16px;border-radius:50%;background:var(--blue)}
+.brand h1{font-size:1.15rem;margin:0;font-weight:700;letter-spacing:.2px}
+.brand small{display:block;font-weight:400;opacity:.85;font-size:.8rem}
+nav{display:flex;gap:4px;max-width:760px;margin:10px auto 0;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:1 0 auto;background:transparent;border:0;color:#fff;opacity:.8;padding:10px 6px;font-size:.88rem;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;font-family:inherit}
+nav button.active{opacity:1;border-bottom-color:var(--yellow);font-weight:600}
+main{max-width:760px;margin:0 auto;padding:16px 14px 60px}
+.view{display:none}
+.view.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px;border:1px solid var(--border)}
+h2{font-size:1.2rem;margin:0 0 6px}
+h3{font-size:1rem;margin:0 0 8px}
+p{margin:.4em 0}
+.muted{color:var(--muted);font-size:.9rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+select,input[type=text]{font:inherit;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--text)}
+input[type=text]{width:100%;font-size:1.05rem}
+input[type=text]:focus,select:focus{outline:2px solid var(--yellow);border-color:var(--green)}
+.btn{font:inherit;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;background:var(--green);color:#fff;font-weight:600;transition:transform .05s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn:hover{background:var(--green-d)}
+.btn.secondary{background:#fff;color:var(--green-d);border:1px solid var(--green)}
+.btn.secondary:hover{background:var(--green-l)}
+.btn.warn{background:var(--red)}
+.btn.yellow{background:var(--yellow);color:#3b2f00}
+.btn.yellow:hover{background:#eab92a}
+.btn.ghost{background:transparent;color:var(--muted);border:1px dashed var(--border)}
+.btn:disabled{opacity:.5;cursor:default}
+.pill{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:999px;background:var(--green-l);color:var(--green-d);font-weight:600}
+.pill.y{background:var(--yellow-l);color:#7a5b00}
+.pill.r{background:var(--red-l);color:var(--red)}
+.pill.b{background:#e7ecf8;color:var(--blue)}
+/* flashcards */
+.flash{perspective:1000px;margin:12px 0;cursor:pointer;user-select:none;-webkit-user-select:none}
+.flash-inner{position:relative;min-height:190px;transition:transform .45s;transform-style:preserve-3d}
+.flash.flipped .flash-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.face.front{background:#fff}
+.face.back{background:var(--green-l);transform:rotateY(180deg);border-color:#bfe2cd}
+.face .lang{position:absolute;top:10px;left:14px;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.face .txt{font-size:1.45rem;font-weight:600}
+.face .hint{position:absolute;bottom:10px;font-size:.8rem;color:var(--muted)}
+.flash-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flash-btns .btn{padding:14px}
+.boxes{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+/* translation */
+.prompt{font-size:1.25rem;font-weight:600;margin:8px 0 14px}
+.feedback{border-radius:12px;padding:12px 14px;margin-top:12px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--green-l);border:1px solid #bfe2cd}
+.feedback.almost{background:var(--yellow-l);border:1px solid #f3dd8e}
+.feedback.bad{background:var(--red-l);border:1px solid #f3c2bc}
+.feedback .ans{font-size:1.1rem;font-weight:600;margin:4px 0}
+.feedback .tip{margin-top:8px;font-size:.93rem}
+.feedback .tip::before{content:"💡 "}
+.mark{background:#f7c2bb;border-radius:4px;padding:0 2px}
+.progressbar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin:8px 0 2px}
+.progressbar div{height:100%;background:linear-gradient(90deg,var(--green),var(--yellow));width:0;transition:width .3s}
+/* quiz */
+.q-sentence{font-size:1.3rem;font-weight:600;margin:10px 0 16px}
+.q-sentence .gap{display:inline-block;min-width:60px;border-bottom:2px solid var(--green);text-align:center;color:var(--green-d)}
+.options{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;padding:13px 14px;border-radius:10px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:1.05rem}
+.opt:hover:not(:disabled){border-color:var(--green);background:#fbfefc}
+.opt.correct{background:var(--green-l);border-color:var(--green);font-weight:600}
+.opt.wrong{background:var(--red-l);border-color:var(--red)}
+.opt:disabled{cursor:default;color:var(--text);opacity:1}
+/* dialog */
+.scen-list{display:grid;gap:10px}
+.scen{display:flex;gap:12px;align-items:center;text-align:left;font:inherit;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer}
+.scen:hover{border-color:var(--green)}
+.scen .emo{font-size:1.8rem}
+.chat{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.bubble{max-width:85%;padding:10px 13px;border-radius:14px;font-size:1rem}
+.bubble.npc{background:#fff;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.bubble.me{background:var(--green);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.bubble.sys{align-self:center;background:var(--yellow-l);font-size:.9rem;max-width:95%;text-align:center}
+.bubble .who{font-size:.72rem;opacity:.7;display:block;margin-bottom:2px}
+.bubble .tr{display:block;font-size:.85rem;color:var(--muted);margin-top:4px;font-style:italic}
+.bubble button.trbtn{font:inherit;font-size:.75rem;background:none;border:0;color:var(--blue);padding:2px 0 0;cursor:pointer;display:block}
+.dfb{font-size:.9rem;border-radius:10px;padding:8px 12px;align-self:stretch}
+.dfb.good{background:var(--green-l)}
+.dfb.meh{background:var(--yellow-l)}
+.dfb.bad{background:var(--red-l)}
+.choices{display:grid;gap:8px;margin-top:8px}
+/* progress */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px}
+.stat .big{font-size:1.6rem;font-weight:700;color:var(--green-d)}
+.weak{list-style:none;padding:0;margin:0}
+.weak li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border)}
+.weak li:last-child{border-bottom:0}
+.weak .n{flex:none;min-width:30px;text-align:center;font-weight:700;color:var(--red)}
+.weak .lbl{flex:1}
+.tagbar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:.9rem}
+.tagbar .bar{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.tagbar .bar div{height:100%;background:var(--red);opacity:.75}
+.tagbar .name{width:130px;flex:none}
+.hero{background:linear-gradient(135deg,var(--yellow-l),#fff);border-left:5px solid var(--yellow)}
+.countdown{font-size:2rem;font-weight:800;color:var(--green-d)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{font:inherit;text-align:left;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer}
+.tile:hover{border-color:var(--green)}
+.tile b{display:block;font-size:1rem;margin-bottom:3px}
+.tile span{font-size:.85rem;color:var(--muted)}
+kbd{background:#eef1ef;border:1px solid var(--border);border-radius:4px;padding:0 5px;font-size:.8rem}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px}
+@media (max-width:480px){
+  .face .txt{font-size:1.25rem}
+  .prompt,.q-sentence{font-size:1.12rem}
+  main{padding:12px 10px 50px}
+  .card{padding:15px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo"><span></span></div>
+    <div><h1>Prática 🇧🇷</h1><small>Brasiliansk portugisisk for hverdagen</small></div>
+  </div>
+  <nav id="nav">
+    <button data-view="home" class="active">Hjem</button>
+    <button data-view="flash">Kort</button>
+    <button data-view="trans">Oversett</button>
+    <button data-view="quiz">Quiz</button>
+    <button data-view="dialog">Dialog</button>
+    <button data-view="prog">Fremgang</button>
+  </nav>
+</header>
+<main>
+  <!-- HJEM -->
+  <section class="view active" id="view-home">
+    <div class="card hero">
+      <h2>Olá, Andreas! 👋</h2>
+      <p>Litt hver dag slår mye én gang i uka. Målet er å <b>snakke fritt</b> – ikke å pugge grammatikk.</p>
+      <p class="muted" id="countdownLabel">Dager til Brasil (1. desember):</p>
+      <div class="countdown" id="countdown">–</div>
+    </div>
+    <div class="card">
+      <h3>Velg øvelse</h3>
+      <div class="grid2">
+        <button class="tile" data-go="flash"><b>🃏 Kort</b><span>Ord og fraser – de du ikke kan, kommer oftere tilbake</span></button>
+        <button class="tile" data-go="trans"><b>✍️ Oversett</b><span>Skriv på portugisisk, få rettelse og tips</span></button>
+        <button class="tile" data-go="quiz"><b>✅ Quiz</b><span>Velg riktig ord i luken</span></button>
+        <button class="tile" data-go="dialog"><b>💬 Rollespill</b><span>Bar, taxi, hotell, stranda, veibeskrivelse</span></button>
+        <button class="tile" data-go="prog"><b>📈 Fremgang</b><span>Poeng og svake punkter</span></button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Dagens påminnelse</h3>
+      <p id="dailyTip"></p>
+      <button class="btn secondary" id="newTip">Nytt tips</button>
+    </div>
+  </section>
+
+  <!-- FLASHCARDS -->
+  <section class="view" id="view-flash">
+    <div class="card">
+      <div class="row">
+        <select id="flashCat" aria-label="Kategori"></select>
+        <select id="flashDir" aria-label="Retning">
+          <option value="no-pt">Norsk → portugisisk</option>
+          <option value="pt-no">Portugisisk → norsk</option>
+          <option value="mix">Blandet</option>
+        </select>
+      </div>
+      <div class="flash" id="flash" tabindex="0" role="button" aria-label="Snu kortet">
+        <div class="flash-inner">
+          <div class="face front"><div class="lang" id="flashLangF"></div><div class="txt" id="flashFront"></div><div class="hint">Trykk for å snu</div></div>
+          <div class="face back"><div class="lang" id="flashLangB"></div><div class="txt" id="flashBack"></div><div class="hint" id="flashCatLbl"></div></div>
+        </div>
+      </div>
+      <div class="flash-btns" id="flashBtns">
+        <button class="btn warn" id="flashNo">✗ Kunne ikke</button>
+        <button class="btn" id="flashYes">✓ Kunne</button>
+      </div>
+      <p class="muted" style="margin-top:10px">Tips: <kbd>Mellomrom</kbd> snur kortet, <kbd>1</kbd> = kunne ikke, <kbd>2</kbd> = kunne.</p>
+      <div class="boxes" id="flashBoxes"></div>
+    </div>
+  </section>
+
+  <!-- OVERSETTELSE -->
+  <section class="view" id="view-trans">
+    <div class="card">
+      <div class="row">
+        <select id="transTag" aria-label="Tema"></select>
+        <span class="spacer"></span>
+        <span class="muted" id="transCount"></span>
+      </div>
+      <div class="progressbar"><div id="transBar"></div></div>
+      <p class="muted" style="margin-top:12px">Oversett til brasiliansk portugisisk:</p>
+      <div class="prompt" id="transPrompt"></div>
+      <input type="text" id="transInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Skriv svaret ditt her …">
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="transCheck">Sjekk</button>
+        <button class="btn ghost" id="transSkip">Vis svaret</button>
+        <span class="spacer"></span>
+        <button class="btn secondary" id="transNext" style="display:none">Neste →</button>
+      </div>
+      <div class="feedback" id="transFb"></div>
+      <p class="muted" style="margin-top:10px"><kbd>Enter</kbd> sjekker svaret – trykk <kbd>Enter</kbd> igjen for neste. Store/små bokstaver, tegnsetting og aksenter teller ikke (men du får beskjed om aksentene). «pra/para», «tá/está» og «tô/estou» godtas om hverandre.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="view-quiz">
+    <div class="card">
+      <div class="row">
+        <span class="pill" id="quizTag"></span>
+        <span class="spacer"></span>
+        <span class="muted" id="quizCount"></span>
+      </div>
+      <div class="progressbar"><div id="quizBar"></div></div>
+      <div class="q-sentence" id="quizQ"></div>
+      <div class="muted" id="quizHint" style="margin:-8px 0 12px"></div>
+      <div class="options" id="quizOpts"></div>
+      <div class="feedback" id="quizFb"></div>
+      <div class="row" style="margin-top:12px">
+        <span class="muted" id="quizScore"></span>
+        <span class="spacer"></span>
+        <button class="btn secondary" id="quizNext" style="display:none">Neste →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIALOG -->
+  <section class="view" id="view-dialog">
+    <div class="card" id="dialogPick">
+      <h2>Rollespill</h2>
+      <p class="muted">Velg en situasjon. Du svarer ved å velge ett av tre alternativer. Feil eller unaturlige svar får en kort forklaring.</p>
+      <div class="scen-list" id="scenList"></div>
+    </div>
+    <div class="card" id="dialogPlay" style="display:none">
+      <div class="row">
+        <button class="btn ghost" id="dialogBack">← Tilbake</button>
+        <span class="spacer"></span>
+        <b id="dialogTitle"></b>
+      </div>
+      <div class="chat" id="chat"></div>
+      <div class="choices" id="choices"></div>
+    </div>
+  </section>
+
+  <!-- FREMGANG -->
+  <section class="view" id="view-prog">
+    <div class="card">
+      <h2>Fremgang</h2>
+      <div class="stats" id="progStats"></div>
+    </div>
+    <div class="card">
+      <h3>Svake punkter – tema</h3>
+      <div id="progTags"></div>
+    </div>
+    <div class="card">
+      <h3>Svake punkter – det du bommer mest på</h3>
+      <ul class="weak" id="progWeak"></ul>
+    </div>
+    <div class="card">
+      <h3>Nullstill</h3>
+      <p class="muted">Sletter all fremgang (poeng, svake punkter og kort-repetisjon) i denne nettleseren.</p>
+      <button class="btn warn" id="progReset">Nullstill alt</button>
+    </div>
+  </section>
+</main>
+<footer>Fremgang lagres lokalt i nettleseren (localStorage). Fungerer uten nett.</footer>
+<script>
+/* ================= DATA ================= */
+const FLASH = [
+ // [norsk, portugisisk, kategori]
+ ["Regningen, takk.","A conta, por favor.","Restaurant og bar"],
+ ["Kan jeg få en øl?","Me vê uma cerveja?","Restaurant og bar"],
+ ["En iskald øl","Uma cerveja gelada","Restaurant og bar"],
+ ["Menyen, takk.","O cardápio, por favor.","Restaurant og bar"],
+ ["Vann uten kullsyre","Água sem gás","Restaurant og bar"],
+ ["Vann med kullsyre","Água com gás","Restaurant og bar"],
+ ["Jeg vil gjerne ha …","Eu queria … / Eu vou querer …","Restaurant og bar"],
+ ["Hva anbefaler du?","O que você recomenda?","Restaurant og bar"],
+ ["Det var veldig godt!","Tava muito bom!","Restaurant og bar"],
+ ["Er serviceavgiften inkludert?","Os dez por cento estão incluídos?","Restaurant og bar"],
+ ["Kan jeg betale med kort?","Posso pagar no cartão?","Restaurant og bar"],
+ ["Skål!","Saúde!","Restaurant og bar"],
+ ["Biff (indrefilet)","Filé","Restaurant og bar"],
+ ["En liter","Um litro","Restaurant og bar"],
+ ["Uten is","Sem gelo","Restaurant og bar"],
+ ["Til å ta med","Pra viagem / Pra levar","Restaurant og bar"],
+ ["Bord til to","Mesa pra dois","Restaurant og bar"],
+ ["Jeg er sulten","Tô com fome","Restaurant og bar"],
+ ["Kan du ta meg til …?","Você pode me levar pra …?","Taxi"],
+ ["Hva koster det til flyplassen?","Quanto fica até o aeroporto?","Taxi"],
+ ["Kan du stoppe her?","Pode parar aqui?","Taxi"],
+ ["Det er her.","É aqui.","Taxi"],
+ ["Jeg har det travelt.","Tô com pressa.","Taxi"],
+ ["Behold vekslepengene.","Pode ficar com o troco.","Taxi"],
+ ["Jeg har en reservasjon.","Eu tenho uma reserva.","Hotell"],
+ ["Når er frokosten?","Que horas é o café da manhã?","Hotell"],
+ ["Nøkkelen","A chave","Hotell"],
+ ["Rommet","O quarto","Hotell"],
+ ["Wi-fi-passordet","A senha do wi-fi","Hotell"],
+ ["Klimaanlegget virker ikke.","O ar-condicionado não tá funcionando.","Hotell"],
+ ["Håndkle","Toalha","Hotell"],
+ ["Hvor kommer du fra?","De onde você é?","Småprat"],
+ ["Jeg er fra Norge.","Eu sou da Noruega.","Småprat"],
+ ["Jeg er norsk.","Eu sou norueguês.","Småprat"],
+ ["Hva jobber du med?","Você trabalha com o quê?","Småprat"],
+ ["Hyggelig å treffe deg!","Prazer! / Muito prazer!","Småprat"],
+ ["Hvordan går det?","Tudo bem? / Como vai?","Småprat"],
+ ["Det går bra.","Tudo bom. / Tô bem.","Småprat"],
+ ["Jeg liker Brasil veldig godt.","Eu gosto muito do Brasil.","Småprat"],
+ ["Er det første gang du er her?","É a sua primeira vez aqui?","Småprat"],
+ ["Jeg snakker litt portugisisk.","Eu falo um pouco de português.","Småprat"],
+ ["Kan du snakke saktere?","Você pode falar mais devagar?","Småprat"],
+ ["Hva betyr …?","O que significa …? / O que quer dizer …?","Småprat"],
+ ["Jeg forstod ikke.","Não entendi.","Småprat"],
+ ["Liker du deg her?","Tá gostando daqui?","Småprat"],
+ ["Det er veldig varmt!","Tá muito quente! / Tá um calor!","Vær"],
+ ["Det regner.","Tá chovendo.","Vær"],
+ ["Det er sol.","Tá sol. / Tá fazendo sol.","Vær"],
+ ["Det er kaldt.","Tá frio.","Vær"],
+ ["Solkrem","Protetor solar","Vær"],
+ ["Neste uke","Semana que vem","Tid"],
+ ["Forrige måned","Mês passado","Tid"],
+ ["I går","Ontem","Tid"],
+ ["I morgen","Amanhã","Tid"],
+ ["I dag","Hoje","Tid"],
+ ["Senere","Mais tarde","Tid"],
+ ["Om litt","Daqui a pouco","Tid"],
+ ["Til klokka seks","Até as seis","Tid"],
+ ["Etter lunsj","Depois do almoço","Tid"],
+ ["Hva er klokka?","Que horas são?","Tid"],
+ ["I helga","No fim de semana","Tid"],
+ ["Mhm (jeg hører etter)","Uhum","Småord og reaksjoner"],
+ ["Skjønner!","Entendi!","Småord og reaksjoner"],
+ ["OK, greit.","Tá bom. / Tá.","Småord og reaksjoner"],
+ ["Fint! / Greit! (uformelt)","Beleza!","Småord og reaksjoner"],
+ ["Kan godt være / OK, gjerne","Pode ser.","Småord og reaksjoner"],
+ ["Akkurat! / Nettopp!","Isso! / Isso aí!","Småord og reaksjoner"],
+ ["Avtale! / Den er grei!","Fechou!","Småord og reaksjoner"],
+ ["Helt rolig / ingen stress","De boa / Tranquilo","Småord og reaksjoner"],
+ ["… ikke sant?","… né?","Småord og reaksjoner"],
+ ["Seriøst?","Sério?","Småord og reaksjoner"],
+ ["Jøss! / Wow!","Nossa!","Småord og reaksjoner"],
+ ["Takk! (uformelt)","Valeu!","Småord og reaksjoner"],
+ ["Bare hyggelig / ingen årsak","De nada / Imagina","Småord og reaksjoner"],
+ ["Unnskyld (for å komme forbi / få oppmerksomhet)","Com licença","Småord og reaksjoner"],
+ ["Beklager!","Desculpa!","Småord og reaksjoner"],
+ ["Skal vi? / Kom igjen!","Bora!","Småord og reaksjoner"],
+ ["Hvor ligger …?","Onde fica …?","Veibeskrivelse"],
+ ["Til høyre","À direita","Veibeskrivelse"],
+ ["Til venstre","À esquerda","Veibeskrivelse"],
+ ["Rett frem","Reto / Em frente","Veibeskrivelse"],
+ ["Er det langt?","É longe?","Veibeskrivelse"],
+ ["Det er like i nærheten.","É pertinho.","Veibeskrivelse"],
+ ["På hjørnet","Na esquina","Veibeskrivelse"],
+ ["Nærmeste minibank","O caixa eletrônico mais perto","Veibeskrivelse"],
+ ["Til fots","A pé","Veibeskrivelse"],
+ ["Hvor mye koster det?","Quanto custa? / Quanto é?","Shopping"],
+ ["Det er for dyrt.","Tá muito caro.","Shopping"],
+ ["Jeg bare ser meg rundt.","Só tô olhando.","Shopping"],
+ ["Har du en mindre størrelse?","Tem um tamanho menor?","Shopping"],
+ ["Kan jeg prøve den?","Posso experimentar?","Shopping"],
+ ["Jeg tar den.","Vou levar.","Shopping"],
+ ["En pose","Uma sacola","Shopping"],
+ ["Gir du rabatt?","Tem desconto?","Shopping"],
+ ["Hjelp!","Socorro!","Nødsituasjoner"],
+ ["Ring politiet!","Chama a polícia!","Nødsituasjoner"],
+ ["Jeg trenger en lege.","Eu preciso de um médico.","Nødsituasjoner"],
+ ["Hvor er sykehuset?","Onde fica o hospital?","Nødsituasjoner"],
+ ["Jeg ble ranet.","Fui assaltado.","Nødsituasjoner"],
+ ["Jeg har mistet passet.","Perdi meu passaporte.","Nødsituasjoner"],
+ ["Apotek","Farmácia","Nødsituasjoner"],
+ ["Jeg er allergisk mot …","Sou alérgico a …","Nødsituasjoner"],
+ ["Jeg har vondt i magen.","Tô com dor de barriga.","Nødsituasjoner"]
+];
+
+/* Oversettelse: no = norsk, a = godkjente svar (første vises), tip = norsk forklaring, tag = tema */
+const TRANS = [
+ {no:"Jeg bor i Norge.",a:["Eu moro na Noruega."],tag:"no/na",tip:"Noruega er hunkjønn og har artikkel: em + a = na. Altså «na Noruega», aldri «em Noruega»."},
+ {no:"Jeg skal til Brasil i desember.",a:["Eu vou pro Brasil em dezembro.","Eu vou para o Brasil em dezembro.","Eu vou ao Brasil em dezembro."],tag:"por/para",tip:"Brasil har artikkel (o Brasil): para + o = pro i dagligtale. Måneder tar «em»: em dezembro."},
+ {no:"Jeg er i Brasil nå.",a:["Eu tô no Brasil agora.","Agora eu tô no Brasil."],tag:"no/na",tip:"em + o = no → «no Brasil». «Tô» (= estou) fordi du er der midlertidig."},
+ {no:"Vi skal til stranda. (bruk «a gente»)",a:["A gente vai pra praia.","A gente vai à praia."],tag:"a gente",tip:"«A gente» betyr «vi», men verbet bøyes som «han/hun»: a gente vai – ikke «a gente vou» eller «a gente vamos»."},
+ {no:"Vi bor på hotell i Rio. (bruk «a gente»)",a:["A gente tá ficando num hotel no Rio.","A gente tá num hotel no Rio.","A gente fica num hotel no Rio.","A gente tá hospedado num hotel no Rio."],tag:"a gente",tip:"«Ficar» = bo midlertidig. Rio har artikkel (o Rio) → «no Rio». em + um = num."},
+ {no:"Jeg er hjemme.",a:["Eu tô em casa."],tag:"em casa",tip:"«Em casa» uten artikkel når det betyr hjemme hos deg selv. «Na casa» bruker du om noens hus: na casa da Ana."},
+ {no:"Jeg jobber hjemme i dag.",a:["Hoje eu tô trabalhando em casa.","Eu tô trabalhando em casa hoje.","Hoje eu trabalho em casa.","Eu trabalho em casa hoje."],tag:"em casa",tip:"Igjen «em casa» – uten artikkel. «Tô trabalhando» (estar + gerúndio) er veldig vanlig om det du gjør nå/i dag."},
+ {no:"Jeg snakket med sjefen.",a:["Eu falei com o chefe.","Eu conversei com o chefe."],tag:"com o",tip:"På portugisisk trenger «chefe» artikkel: com o chefe (ikke «com chefe»). «Com» trekkes ikke sammen med o."},
+ {no:"Jeg har et møte med sjefen i morgen.",a:["Amanhã eu tenho uma reunião com o chefe.","Eu tenho uma reunião com o chefe amanhã."],tag:"com o",tip:"«Com o chefe» – husk artikkelen. Møte = reunião."},
+ {no:"Jeg var der i en uke.",a:["Eu fiquei lá por uma semana.","Eu fiquei lá uma semana.","Eu passei uma semana lá."],tag:"por/para",tip:"«Por» + tidsrom = varighet (i en uke). Du kan også droppe «por». «Para uma semana» er feil her."},
+ {no:"Vi gikk tur i en time. (bruk «a gente»)",a:["A gente caminhou por uma hora.","A gente andou por uma hora.","A gente caminhou uma hora.","A gente andou uma hora."],tag:"por/para",tip:"Varighet = por uma hora. Og «a gente» + caminhou (3. person), ikke «caminhamos»."},
+ {no:"Jeg gikk ikke ut på grunn av regnet.",a:["Eu não saí por causa da chuva."],tag:"por/para",tip:"«På grunn av» = por causa de. de + a chuva = da chuva."},
+ {no:"Takk for hjelpen!",a:["Obrigado pela ajuda!","Valeu pela ajuda!"],tag:"por/para",tip:"«Takk for» = obrigado por. por + a = pela. (Aldri «obrigado para».)"},
+ {no:"Gaven er til deg.",a:["O presente é pra você."],tag:"por/para",tip:"Mottaker = para/pra. Og «é» med aksent = er (e uten aksent = og)."},
+ {no:"Etter lunsj drar vi til stranda. (bruk «a gente»)",a:["Depois do almoço a gente vai pra praia.","A gente vai pra praia depois do almoço."],tag:"depois de/do",tip:"depois de + o almoço = depois do almoço. Lunsj = almoço (middag om kvelden = jantar)."},
+ {no:"Etter jobben tar jeg en øl.",a:["Depois do trabalho eu tomo uma cerveja.","Depois do trabalho eu vou tomar uma cerveja.","Eu tomo uma cerveja depois do trabalho."],tag:"depois de/do",tip:"depois de + o trabalho = depois do trabalho. Øl «drikker» man med «tomar» i dagligtale."},
+ {no:"Vi kan snakke etter at vi har spist. (bruk «a gente»)",a:["A gente pode conversar depois de comer.","A gente pode falar depois de comer.","Depois de comer a gente pode conversar."],tag:"depois de/do",tip:"Foran et verb (infinitiv) står det bare «depois de» – ingen artikkel: depois de comer."},
+ {no:"Butikken er åpen til klokka seks.",a:["A loja fica aberta até as seis.","A loja tá aberta até as seis.","A loja abre até as seis.","A loja fica aberta até às seis.","A loja tá aberta até às seis."],tag:"até as",tip:"Klokkeslett er hunkjønn flertall (as horas): até as seis. «Até às seis» ses også og godtas."},
+ {no:"Jeg jobber fra ni til fem.",a:["Eu trabalho das nove às cinco."],tag:"até as",tip:"Fra … til … om klokkeslett = das … às … (de + as = das, a + as = às)."},
+ {no:"Jeg holder på å spise.",a:["Eu tô comendo."],tag:"estar + gerúndio",tip:"«Holder på med» = estar + gerúndio (-ando/-endo/-indo): tô comendo, tô falando."},
+ {no:"Hva gjør du nå?",a:["O que você tá fazendo agora?","O que você tá fazendo?","Você tá fazendo o quê?"],tag:"estar + gerúndio",tip:"Om det som skjer akkurat nå bruker brasilianere nesten alltid tá + gerúndio: tá fazendo."},
+ {no:"Liker du deg i Brasil?",a:["Você tá gostando do Brasil?","Tá gostando do Brasil?"],tag:"estar + gerúndio",tip:"«Tá gostando?» = liker du det (så langt)? Og gostar de + o = do Brasil."},
+ {no:"Jeg liker brasiliansk mat.",a:["Eu gosto de comida brasileira.","Eu gosto da comida brasileira."],tag:"gostar de",tip:"«Gostar» tar alltid «de»: gosto de … Uten «de» blir det feil."},
+ {no:"Jeg liker å danse.",a:["Eu gosto de dançar."],tag:"gostar de",tip:"gostar de + verb i infinitiv: gosto de dançar."},
+ {no:"Jeg liker ikke koriander.",a:["Eu não gosto de coentro."],tag:"gostar de",tip:"Nektelse før verbet: não gosto de … Koriander = coentro."},
+ {no:"Han er norsk og hun er brasiliansk.",a:["Ele é norueguês e ela é brasileira."],tag:"é/e",tip:"«é» (med aksent) = er, «e» = og. Staving: norueguês (med u og ê)."},
+ {no:"Jeg er sliten.",a:["Eu tô cansado.","Eu tô muito cansado."],tag:"ser/estar",tip:"Tilstand akkurat nå = estar (tô). «Sou cansado» betyr at du er en sliten person av natur."},
+ {no:"Jeg er ingeniør.",a:["Eu sou engenheiro."],tag:"ser/estar",tip:"Yrke, nasjonalitet og identitet = ser (sou). Ingen artikkel foran yrket."},
+ {no:"Det er veldig varmt i dag.",a:["Hoje tá muito quente.","Tá muito quente hoje.","Hoje tá muito calor.","Tá muito calor hoje.","Hoje tá fazendo muito calor.","Tá fazendo muito calor hoje."],tag:"ser/estar",tip:"Vær akkurat nå = tá (estar). Staving: muito – én i og én u: m-u-i-t-o."},
+ {no:"Rio er en veldig vakker by.",a:["O Rio é uma cidade muito bonita.","O Rio é uma cidade muito linda."],tag:"ser/estar",tip:"Fast egenskap = ser (é). Rio har artikkel: o Rio."},
+ {no:"Kan jeg få regningen, takk?",a:["A conta, por favor.","Me vê a conta, por favor.","Pode trazer a conta, por favor?","Você pode trazer a conta, por favor?","Me traz a conta, por favor."],tag:"staving",tip:"«Por favor» – skrives p-o-r f-a-v-o-r (ikke «pro favor» eller «por favo»)."},
+ {no:"En liter vann, takk.",a:["Um litro de água, por favor."],tag:"staving",tip:"Liter = litro (hankjønn: um litro). Mellom mengde og ting står «de»: um litro de água."},
+ {no:"Jeg vil gjerne ha en biff med ris.",a:["Eu queria um filé com arroz.","Eu vou querer um filé com arroz.","Eu quero um filé com arroz."],tag:"staving",tip:"Filé med é. «Eu queria» / «vou querer» er høfligere enn «eu quero» når du bestiller."},
+ {no:"Jeg er norsk.",a:["Eu sou norueguês."],tag:"staving",tip:"Nasjonalitet = ser (sou). Staving: norueguês – «gu» før e, og ê til slutt."},
+ {no:"Jeg snakker norsk og litt portugisisk.",a:["Eu falo norueguês e um pouco de português."],tag:"é/e",tip:"«e» uten aksent = og. Litt = um pouco de."},
+ {no:"Tusen takk!",a:["Muito obrigado!","Obrigadão!"],tag:"staving",tip:"«Muito» uttales nesten «muinto», men skrives m-u-i-t-o. Som mann sier du obrigado."},
+ {no:"Vi ses i morgen!",a:["Até amanhã!","A gente se vê amanhã!"],tag:"tid",tip:"«Até amanhã» er den vanligste avskjeden. «A gente se vê» = vi ses."},
+ {no:"Vi ses neste uke.",a:["A gente se vê semana que vem.","A gente se vê na semana que vem.","Até semana que vem.","Até a semana que vem."],tag:"tid",tip:"Neste uke = semana que vem (eller «a próxima semana»)."},
+ {no:"Jeg var i São Paulo forrige måned.",a:["Eu tava em São Paulo mês passado.","Eu tava em São Paulo no mês passado.","Eu estive em São Paulo mês passado.","Eu estive em São Paulo no mês passado.","Eu fui pra São Paulo mês passado.","Eu fui a São Paulo mês passado."],tag:"tid",tip:"De fleste byer har ikke artikkel: em São Paulo, em Salvador. Unntak: o Rio → no Rio. Forrige måned = mês passado."},
+ {no:"Jeg skal til Salvador neste uke.",a:["Eu vou pra Salvador semana que vem.","Eu vou pra Salvador na semana que vem.","Eu vou a Salvador semana que vem."],tag:"por/para",tip:"Salvador har ingen artikkel → pra (ikke pro). Sammenlign: pro Rio, pra Salvador."},
+ {no:"Hvor lenge blir du?",a:["Quanto tempo você vai ficar?","Você vai ficar quanto tempo?"],tag:"reise",tip:"«Ficar» = bli (værende). Vanlig spørsmål fra brasilianere!"},
+ {no:"Jeg blir her i to uker.",a:["Eu vou ficar aqui por duas semanas.","Eu vou ficar aqui duas semanas.","Eu fico aqui por duas semanas."],tag:"por/para",tip:"Varighet = por (kan droppes). Uke er hunkjønn: duas semanas."},
+ {no:"Kan du kjøre meg til flyplassen?",a:["Você pode me levar pro aeroporto?","Pode me levar pro aeroporto?","Você pode me levar ao aeroporto?","Pode me levar ao aeroporto?"],tag:"por/para",tip:"Retning = pra/para. Aeroporto har artikkel: para + o = pro aeroporto. «Levar» = ta med / kjøre noen."},
+ {no:"Hva koster det til sentrum?",a:["Quanto fica até o centro?","Quanto custa até o centro?","Quanto é até o centro?"],tag:"reise",tip:"«Quanto fica …?» er veldig naturlig når du spør om pris på en tur."},
+ {no:"Kan du stoppe her, takk?",a:["Pode parar aqui, por favor?","Você pode parar aqui, por favor?"],tag:"reise",tip:"«Pode + infinitiv?» er en høflig og enkel måte å be om noe."},
+ {no:"Hvor er toalettet?",a:["Onde fica o banheiro?","Onde é o banheiro?","Cadê o banheiro?"],tag:"reise",tip:"Toalett = banheiro i Brasil. «Cadê …?» er en muntlig måte å si «hvor er …?»."},
+ {no:"Er det langt herfra?",a:["É longe daqui?"],tag:"reise",tip:"de + aqui = daqui. Avstand bruker «é»: é longe / é perto."},
+ {no:"Ta til venstre på hjørnet.",a:["Vira à esquerda na esquina.","Vire à esquerda na esquina."],tag:"reise",tip:"Til venstre = à esquerda (med aksent: a + a = à). På hjørnet = na esquina."},
+ {no:"Jeg forstod ikke. Kan du snakke saktere?",a:["Não entendi. Você pode falar mais devagar?","Não entendi. Pode falar mais devagar?"],tag:"reise",tip:"«Não entendi» (fortid) er det brasilianere sier, ikke «não entendo». Saktere = mais devagar."},
+ {no:"Jeg leter etter en minibank.",a:["Eu tô procurando um caixa eletrônico.","Eu tô procurando um caixa."],tag:"estar + gerúndio",tip:"«Leter etter» = tô procurando (estar + gerúndio). Ingen preposisjon etter procurar."},
+ {no:"Vi venter på bussen. (bruk «a gente»)",a:["A gente tá esperando o ônibus."],tag:"a gente",tip:"A gente + tá (ikke «tamos»). «Esperar» trenger ingen «på»: esperar o ônibus."},
+ {no:"Hun er på stranda.",a:["Ela tá na praia."],tag:"ser/estar",tip:"Hvor noen befinner seg = estar (tá). em + a praia = na praia."},
+ {no:"Hvor er du fra?",a:["De onde você é?","Você é de onde?"],tag:"ser/estar",tip:"Opprinnelse = ser: de onde você é? Svaret: sou da Noruega."},
+ {no:"Jeg kommer fra Norge.",a:["Eu sou da Noruega.","Eu venho da Noruega."],tag:"no/na",tip:"de + a Noruega = da Noruega (ikke «de Noruega»)."},
+ {no:"Jeg reiser tilbake til Norge i januar.",a:["Eu volto pra Noruega em janeiro.","Eu vou voltar pra Noruega em janeiro."],tag:"no/na",tip:"para + a Noruega = pra Noruega (pra a → pra). Måned: em janeiro."},
+ {no:"Jeg har en reservasjon i navnet Andreas.",a:["Eu tenho uma reserva no nome de Andreas.","Eu tenho uma reserva em nome de Andreas.","Eu tenho uma reserva no nome do Andreas."],tag:"reise",tip:"«No nome do Andreas» er vanlig muntlig – brasilianere setter ofte artikkel foran fornavn."},
+ {no:"Er frokosten inkludert?",a:["O café da manhã tá incluído?","O café da manhã tá incluso?","O café da manhã é incluído?","O café da manhã é incluso?"],tag:"reise",tip:"Frokost = café da manhã. «Incluso» er veldig vanlig i Brasil, «incluído» godtas også."},
+ {no:"Klimaanlegget virker ikke.",a:["O ar-condicionado não tá funcionando.","O ar-condicionado não funciona."],tag:"estar + gerúndio",tip:"«Não tá funcionando» = virker ikke (akkurat nå). Det vanligste i Brasil."},
+ {no:"Jeg har vondt i hodet.",a:["Eu tô com dor de cabeça."],tag:"ser/estar",tip:"Vondt/sult/tørst/hastverk = estar com: tô com dor de cabeça, tô com fome, tô com pressa."},
+ {no:"Jeg har lyst på en kald øl.",a:["Eu tô a fim de uma cerveja gelada.","Eu quero uma cerveja gelada."],tag:"tá/tô",tip:"«Tô a fim de …» = jeg har lyst på … Svært vanlig i dagligtale."},
+ {no:"Ingen stress, alt i orden.",a:["De boa, tá tudo bem.","Tranquilo, tá tudo bem.","Tá tudo bem, de boa.","Relaxa, tá tudo bem."],tag:"tá/tô",tip:"«De boa» / «tranquilo» = helt greit, ingen stress. «Tá tudo bem» = alt er bra."},
+ {no:"Det var veldig godt, takk!",a:["Tava muito bom, obrigado!","Tava ótimo, obrigado!"],tag:"tá/tô",tip:"«Tava» er muntlig for «estava» (var). Mat som smakte godt: tava muito bom!"},
+ {no:"Vi snakkes senere!",a:["A gente se fala mais tarde!","A gente se fala depois!","A gente se fala!"],tag:"a gente",tip:"«A gente se fala» = vi snakkes. Mais tarde = senere."},
+ {no:"Butikken stenger klokka ti.",a:["A loja fecha às dez."],tag:"até as",tip:"«Klokka ti» = às dez (a + as = às, med aksent). Etter «até» er det vanlig å skrive bare «as»: até as dez."},
+ {no:"Er du på ferie eller jobber du?",a:["Você tá de férias ou tá trabalhando?","Você tá de férias ou trabalhando?","Tá de férias ou tá trabalhando?"],tag:"estar + gerúndio",tip:"«Tá de férias» = er på ferie. «Tá trabalhando» = jobber (nå)."},
+ {no:"Vi skal spise på en restaurant i kveld. (bruk «a gente»)",a:["A gente vai jantar num restaurante hoje à noite.","Hoje à noite a gente vai jantar num restaurante.","A gente vai comer num restaurante hoje à noite.","Hoje à noite a gente vai comer num restaurante."],tag:"a gente",tip:"A gente vai + infinitiv = vi skal … I kveld = hoje à noite. em + um = num."},
+ {no:"Jeg er på hotellet.",a:["Eu tô no hotel."],tag:"no/na",tip:"Sted = estar (tô). em + o hotel = no hotel."}
+];
+
+/* Quiz: q med ___ som luke, o = alternativer (første = riktig), e = forklaring */
+const QUIZ = [
+ {q:"Eu moro ___ Noruega.",o:["na","no","em"],tag:"no/na",e:"Noruega er hunkjønn med artikkel: em + a = na."},
+ {q:"Eu vou ___ Brasil em dezembro.",o:["pro","pra","em"],tag:"por/para",e:"o Brasil er hankjønn: para + o = pro. «Pra» passer foran hunkjønn (pra praia)."},
+ {q:"A gente ___ pra praia amanhã.",o:["vai","vou","vamos"],tag:"a gente",e:"A gente bøyes som ele/ela: a gente vai."},
+ {q:"Eu tô ___ casa.",o:["em","na","no"],tag:"em casa",e:"Hjemme = em casa, uten artikkel."},
+ {q:"Ontem eu falei ___ chefe.",o:["com o","com","no"],tag:"com o",e:"Chefe trenger artikkel: com o chefe."},
+ {q:"Fiquei lá ___ uma semana.",o:["por","para","de"],tag:"por/para",e:"Varighet = por: por uma semana."},
+ {q:"Não fui ___ causa da chuva.",o:["por","para","de"],tag:"por/para",e:"Fast uttrykk: por causa de = på grunn av."},
+ {q:"Esse presente é ___ você.",o:["pra","por","de"],tag:"por/para",e:"Mottaker = para/pra: é pra você."},
+ {q:"___ almoço, a gente vai pra praia.",o:["Depois do","Depois de","Depois o"],tag:"depois de/do",e:"depois de + o almoço = depois do almoço."},
+ {q:"___ comer, a gente conversa.",o:["Depois de","Depois do","Depois da"],tag:"depois de/do",e:"Foran verb: bare «depois de» (ingen artikkel)."},
+ {q:"A loja fica aberta ___ seis.",o:["até as","até os","até"],tag:"até as",e:"Klokkeslett er hunkjønn flertall (as horas): até as seis."},
+ {q:"Eu ___ falando com ela agora.",o:["tô","sou","vou"],tag:"estar + gerúndio",e:"Holder på med = estar + gerúndio: tô falando."},
+ {q:"Você ___ gostando do Brasil?",o:["tá","é","tem"],tag:"estar + gerúndio",e:"«Tá gostando?» = liker du det (så langt)?"},
+ {q:"Ele ___ norueguês.",o:["é","e","tá"],tag:"é/e",e:"«é» med aksent = er. Nasjonalitet = ser."},
+ {q:"Eu falo inglês ___ português.",o:["e","é","i"],tag:"é/e",e:"«e» uten aksent = og."},
+ {q:"Ela ___ brasileira, mas mora na Noruega.",o:["é","tá","e"],tag:"é/e",e:"Nasjonalitet = ser: ela é brasileira."},
+ {q:"Hoje eu ___ cansado.",o:["tô","sou","é"],tag:"ser/estar",e:"Midlertidig tilstand = estar: tô cansado."},
+ {q:"Eu ___ engenheiro.",o:["sou","tô","estou"],tag:"ser/estar",e:"Yrke = ser: sou engenheiro."},
+ {q:"O Rio ___ uma cidade linda.",o:["é","tá","e"],tag:"ser/estar",e:"Fast egenskap/identitet = ser."},
+ {q:"Hoje ___ muito calor!",o:["tá","é","sou"],tag:"ser/estar",e:"Vær akkurat nå = tá (estar)."},
+ {q:"Ela ___ na praia agora.",o:["tá","é","e"],tag:"ser/estar",e:"Hvor noen befinner seg = estar: tá na praia."},
+ {q:"Eu gosto ___ dançar.",o:["de","do","–"],tag:"gostar de",e:"gostar de + infinitiv: gosto de dançar."},
+ {q:"Você gosta ___ Brasil?",o:["do","de","da"],tag:"gostar de",e:"gostar de + o Brasil = do Brasil."},
+ {q:"Eu não gosto ___ coentro.",o:["de","–","para"],tag:"gostar de",e:"«Gostar» trenger alltid «de»."},
+ {q:"Me vê uma cerveja, ___ favor.",o:["por","pro","pra"],tag:"staving",e:"Det heter alltid «por favor»."},
+ {q:"___ obrigado!",o:["Muito","Muinto","Mutio"],tag:"staving",e:"Uttales nesten «muinto», men skrives muito."},
+ {q:"Um ___ de água, por favor.",o:["litro","liter","litre"],tag:"staving",e:"Liter = litro (um litro)."},
+ {q:"Eu sou ___.",o:["norueguês","noruegês","norueguez"],tag:"staving",e:"Norueguês – med «gu» og ê."},
+ {q:"Eu queria um ___ com fritas.",o:["filé","filê","fillé"],tag:"staving",e:"Filé – med é (åpen e)."},
+ {q:"Eu sou ___ Noruega.",o:["da","do","de"],tag:"no/na",e:"de + a Noruega = da Noruega."},
+ {q:"Ela mora ___ São Paulo.",o:["em","no","na"],tag:"no/na",e:"De fleste byer har ingen artikkel: em São Paulo."},
+ {q:"A gente se vê ___ Rio!",o:["no","em","na"],tag:"no/na",e:"Rio er unntaket som har artikkel: o Rio → no Rio."},
+ {q:"Vou pra Salvador semana ___. (= neste uke)",o:["que vem","passada","passado"],tag:"tid",e:"Neste uke = semana que vem."},
+ {q:"Eu tava em Recife mês ___. (= forrige måned)",o:["passado","passada","que vem"],tag:"tid",e:"Mês er hankjønn: mês passado. (Uke er hunkjønn: semana passada.)"},
+ {q:"Obrigado ___ ajuda!",o:["pela","para a","por a"],tag:"por/para",e:"Takk for = obrigado por; por + a = pela."},
+ {q:"Eu trabalho ___ nove às cinco.",o:["das","de","dos"],tag:"até as",e:"Fra … til … (klokka) = das … às …"},
+ {q:"A loja fecha ___ dez.",o:["às","as","os"],tag:"até as",e:"Klokka ti = às dez (a + as, med aksent)."},
+ {q:"A gente ___ esperando o ônibus.",o:["tá","tô","tamos"],tag:"a gente",e:"A gente + tá (3. person): a gente tá esperando."},
+ {q:"Ontem a gente ___ muito!",o:["dançou","dançamos","dancei"],tag:"a gente",e:"A gente + 3. person: dançou. («Nós dançamos» er også riktig, men da med «nós».)"},
+ {q:"A gente ___ fome.",o:["tá com","é com","tô com"],tag:"a gente",e:"Sulten = estar com fome; a gente tá com fome."},
+ {q:"___ onde você é?",o:["De","Da","Do"],tag:"ser/estar",e:"De onde = hvor fra."},
+ {q:"Que horas ___?",o:["são","é","tá"],tag:"tid",e:"Hva er klokka? = Que horas são? (flertall)"},
+ {q:"O ar-condicionado não tá ___.",o:["funcionando","funciona","funcionar"],tag:"estar + gerúndio",e:"Estar + gerúndio: não tá funcionando."},
+ {q:"Pode ___ aqui, por favor?",o:["parar","para","parando"],tag:"reise",e:"Pode + infinitiv: pode parar?"},
+ {q:"Vira à ___ na esquina.",o:["esquerda","esquerdo","esquerdas"],tag:"reise",e:"Til venstre = à esquerda (hunkjønn)."},
+ {q:"É ___ daqui?",o:["longe","longa","longo"],tag:"reise",e:"Langt borte = longe (bøyes ikke)."},
+ {q:"Você ___ procurando alguma coisa?",o:["tá","é","tem"],tag:"estar + gerúndio",e:"Holder på med = tá + gerúndio."},
+ {q:"Eu ___ com dor de cabeça.",o:["tô","sou","tenho"],tag:"ser/estar",e:"Vondt = estar com dor: tô com dor de cabeça."},
+ {q:"Eu ___ a fim de uma cerveja gelada.",o:["tô","sou","vou"],tag:"tá/tô",e:"«Tô a fim de» = har lyst på."},
+ {q:"— Vamos às oito? — ___!",o:["Fechou","Fechei","Fecha"],tag:"tá/tô",e:"«Fechou!» = avtale! (også «Fechado!»)."},
+ {q:"— Obrigado! — De ___!",o:["nada","nado","coisa"],tag:"reise",e:"Ingen årsak = de nada (eller «imagina»)."},
+ {q:"Eu falo ___ pouco de português.",o:["um","uma","o"],tag:"reise",e:"Litt = um pouco (de)."},
+ {q:"Vou ficar aqui ___ duas semanas.",o:["por","para","pra"],tag:"por/para",e:"Varighet = por."},
+ {q:"Eu volto ___ Noruega em janeiro.",o:["pra","pro","por"],tag:"por/para",e:"para + a Noruega = pra Noruega."},
+ {q:"Esse ônibus vai ___ centro?",o:["pro","pra","por"],tag:"por/para",e:"o centro er hankjønn: para + o = pro."},
+ {q:"Eu tô ___ hotel.",o:["no","na","em"],tag:"no/na",e:"em + o hotel = no hotel."}
+];
+/* Rollespill. Hvert valg: t = tekst, k = good|meh|bad, fb = tilbakemelding (norsk), n = neste node ("end" = ferdig) */
+const DIALOGS = [
+ {id:"bar",emo:"🍺",title:"Barzinho",desc:"Bestill drikke og mat og betal på en bar",who:"Garçom",start:"n1",
+  end:"Garçom: Valeu, volte sempre! 🍻",
+  nodes:{
+   n1:{pt:"Boa noite! Mesa pra quantos?",no:"God kveld! Bord til hvor mange?",c:[
+     {t:"Boa noite! Pra dois, por favor.",k:"good",n:"n2"},
+     {t:"Boa noite! Pro dois, pro favor.",k:"bad",fb:"To feil: «dois» er et tall, så det blir «pra dois». Og det heter alltid «por favor»."},
+     {t:"Boa noite! Eu sou dois.",k:"bad",fb:"«Eu sou dois» betyr «jeg er to». Si «Pra dois» (= til to)."}]},
+   n2:{pt:"Fechou. O que vocês vão beber?",no:"Greit. Hva skal dere drikke?",c:[
+     {t:"Me vê duas cervejas geladas, por favor.",k:"good",fb:"Perfekt! «Me vê …» er helt typisk brasiliansk måte å bestille på.",n:"n3"},
+     {t:"Eu queria um suco de laranja e uma água sem gás.",k:"good",n:"n3b"},
+     {t:"Eu gosto cerveja.",k:"bad",fb:"«Gostar» trenger «de» (gosto de cerveja) – og det betyr «jeg liker øl», ikke en bestilling. Prøv «Me vê uma cerveja»."}]},
+   n3:{pt:"Beleza. Vocês querem alguma coisa pra comer? A porção de pastel tá saindo muito hoje.",no:"Fint. Vil dere ha noe å spise? Pastel-porsjonen går unna i dag.",c:[
+     {t:"Pode ser! Uma porção de pastel, então.",k:"good",fb:"«Pode ser» = ja, gjerne / det kan vi godt.",n:"n4"},
+     {t:"Não, obrigado. Só a bebida mesmo.",k:"good",n:"n4"},
+     {t:"Sim, eu tô comida.",k:"bad",fb:"«Comida» betyr mat. Sulten = «tô com fome». Men her holder det å si «Pode ser!»."}]},
+   n3b:{pt:"Tá. O suco é com açúcar ou sem açúcar?",no:"OK. Juicen – med eller uten sukker?",c:[
+     {t:"Sem açúcar, por favor.",k:"good",n:"n4"},
+     {t:"Com açúcar, mas sem gelo, por favor.",k:"good",n:"n4"},
+     {t:"Sim.",k:"meh",fb:"«Sim» svarer ikke på et enten-eller-spørsmål. Gjenta heller alternativet: «Sem açúcar». Brasilianere svarer ofte ved å gjenta verbet/ordet i stedet for å si «sim».",n:"n4"}]},
+   n4:{pt:"E aí, tá tudo certo por aqui?",no:"Er alt i orden her?",c:[
+     {t:"Tá ótimo, valeu! Pode trazer a conta, por favor?",k:"good",n:"n5"},
+     {t:"Sim, é tudo bom.",k:"meh",fb:"Forståelig, men om situasjonen nå bruker man estar: «Tá tudo ótimo!» / «Tá tudo certo!».",n:"n5"},
+     {t:"Eu sou bem.",k:"bad",fb:"Tilstand = estar: «Tô bem». Men han spør om alt er i orden – svar «Tá ótimo, valeu!»."}]},
+   n5:{pt:"Claro. Os dez por cento estão inclusos, tá? Vai ser no cartão ou no Pix?",no:"Selvsagt. Serviceavgiften på 10 % er inkludert, ok? Blir det kort eller Pix?",c:[
+     {t:"No cartão, por favor.",k:"good",fb:"Bra! Tips: I Brasil legges ofte 10 % serviceavgift på regningen («os dez por cento»). Pix er brasilianernes betalingsapp – som Vipps.",n:"end"},
+     {t:"Não tenho Pix. Pode ser no cartão?",k:"good",fb:"Helt naturlig! «Pode ser no cartão?» = går det an med kort?",n:"end"},
+     {t:"Com cartão.",k:"meh",fb:"Forståelig, men det naturlige er «no cartão» (pagar no cartão).",n:"end"}]}
+  }},
+ {id:"taxi",emo:"🚕",title:"Taxi / Uber",desc:"Fortell hvor du skal, og prat litt med sjåføren",who:"Motorista",start:"n1",
+  end:"Motorista: Valeu, boa viagem! 👋",
+  nodes:{
+   n1:{pt:"Boa tarde! Pra onde?",no:"God ettermiddag! Hvor skal du?",c:[
+     {t:"Boa tarde! Pro aeroporto, por favor.",k:"good",n:"n2"},
+     {t:"Boa tarde! Pro hotel Copacabana Palace, por favor.",k:"good",n:"n2b"},
+     {t:"Boa tarde! Eu vou em aeroporto.",k:"bad",fb:"Retning = pra/para, og aeroporto har artikkel: «pro aeroporto»."}]},
+   n2:{pt:"Beleza. Voo nacional ou internacional?",no:"Greit. Innenlands eller utenlands fly?",c:[
+     {t:"Internacional. Vou voltar pra Noruega.",k:"good",fb:"Fint – «pra Noruega» (para + a).",n:"n3"},
+     {t:"Internacional, terminal dois.",k:"good",n:"n3"},
+     {t:"Eu sou internacional.",k:"bad",fb:"«Eu sou internacional» = jeg er internasjonal 😄. Svar bare «Internacional»."}]},
+   n2b:{pt:"Ah, conheço. Você tá passeando ou trabalhando aqui no Rio?",no:"Ah, den kjenner jeg. Er du her på tur eller for å jobbe?",c:[
+     {t:"Tô passeando! É minha primeira vez no Brasil.",k:"good",n:"n3"},
+     {t:"Passeando. Sou da Noruega.",k:"good",n:"n3"},
+     {t:"Eu sou passeando.",k:"bad",fb:"Estar + gerúndio, ikke ser: «Tô passeando»."}]},
+   n3:{pt:"Nossa, que legal! E aí, tá gostando?",no:"Jøss, så kult! Og, liker du deg?",c:[
+     {t:"Tô gostando muito! O pessoal aqui é muito simpático.",k:"good",n:"n4"},
+     {t:"Sim, eu gosto muito do Brasil.",k:"good",fb:"Riktig! Enda mer naturlig: svar med samme form som spørsmålet – «Tô gostando muito!».",n:"n4"},
+     {t:"Eu gosto o Brasil.",k:"bad",fb:"Gostar de + o = do: «Eu gosto do Brasil»."}]},
+   n4:{pt:"Tá um trânsito chato agora. A gente vai levar uns quarenta minutos.",no:"Det er kjip trafikk nå. Vi bruker ca. 40 minutter.",c:[
+     {t:"Tranquilo, sem pressa.",k:"good",n:"n5"},
+     {t:"Uhum, entendi. Tô com um pouco de pressa – tem outro caminho?",k:"good",fb:"Bra! «Tô com pressa» = jeg har det travelt (estar com).",n:"n5"},
+     {t:"Eu estou pressa.",k:"bad",fb:"Det heter «estar com pressa»: «Tô com pressa»."}]},
+   n5:{pt:"Chegamos! Deu oitenta e cinco reais.",no:"Vi er fremme! Det ble 85 reais.",c:[
+     {t:"Valeu! Pode ficar com o troco.",k:"good",fb:"«Pode ficar com o troco» = behold vekslepengene.",n:"end"},
+     {t:"Obrigado! Posso pagar no cartão?",k:"good",n:"end"},
+     {t:"Quanto é muito?",k:"bad",fb:"Gir ingen mening («hvor mye er mye?»). Han har sagt prisen – takk og betal: «Valeu! Posso pagar no cartão?»"}]}
+  }},
+ {id:"hotel",emo:"🏨",title:"Innsjekking på hotellet",desc:"Sjekk inn, forleng oppholdet og spør om frokost og wi-fi",who:"Recepcionista",start:"n1",
+  end:"Recepcionista: Boa estadia! 🌴",
+  nodes:{
+   n1:{pt:"Boa noite, seja bem-vindo! Posso ajudar?",no:"God kveld, velkommen! Kan jeg hjelpe deg?",c:[
+     {t:"Boa noite! Eu tenho uma reserva no nome de Andreas Ervig.",k:"good",n:"n2"},
+     {t:"Boa noite! Eu sou uma reserva.",k:"bad",fb:"«Eu sou uma reserva» = jeg er en reservasjon. Bruk «ter»: «Eu tenho uma reserva»."},
+     {t:"Oi. Reserva. Andreas.",k:"meh",fb:"Forståelig, men litt brått. Hele setningen er enkel: «Eu tenho uma reserva no nome de Andreas».",n:"n2"}]},
+   n2:{pt:"Perfeito. Pode me mostrar seu passaporte, por favor?",no:"Perfekt. Kan du vise meg passet ditt?",c:[
+     {t:"Claro, tá aqui.",k:"good",n:"n3"},
+     {t:"Claro, aqui está.",k:"good",n:"n3"},
+     {t:"Claro, é aqui.",k:"bad",fb:"«É aqui» betyr «det er her (stedet)». Når du rekker frem noe: «Tá aqui» / «Aqui está»."}]},
+   n3:{pt:"Obrigada. O senhor vai ficar quatro noites, até sábado, certo?",no:"Takk. Du blir fire netter, til lørdag, stemmer det?",c:[
+     {t:"Isso, até sábado.",k:"good",fb:"«Isso» = akkurat / stemmer – veldig brasiliansk.",n:"n4"},
+     {t:"Na verdade, eu queria ficar até domingo. É possível?",k:"good",n:"n3b"},
+     {t:"Sim, eu vou ficar para quatro noites.",k:"bad",fb:"Varighet = por (eller ingenting): «vou ficar (por) quatro noites». «Para» passer ikke her."}]},
+   n3b:{pt:"Deixa eu ver… Tem disponibilidade, sim. Fica mais uma diária, tá bom?",no:"La meg se … Ja, det er ledig. Det blir én natt til (betales ekstra), ok?",c:[
+     {t:"Tá bom, pode ser.",k:"good",n:"n4"},
+     {t:"Fechou, obrigado!",k:"good",n:"n4"},
+     {t:"Eu é bom.",k:"bad",fb:"Bøyningen er feil (eu sou), og meningen blir rar. Si bare «Tá bom!» = greit."}]},
+   n4:{pt:"O café da manhã é das seis às dez, no térreo.",no:"Frokosten er fra seks til ti, i første etasje.",c:[
+     {t:"Beleza. E qual é a senha do wi-fi?",k:"good",n:"n5"},
+     {t:"Entendi. O café da manhã tá incluso?",k:"good",n:"n5"},
+     {t:"Eu como café da manhã das seis.",k:"bad",fb:"Uklart («jeg spiser frokost fra seks»). Bekreft heller («Beleza!» / «Entendi») og still neste spørsmål."}]},
+   n5:{pt:"Tá tudo incluso, e a senha do wi-fi tá no cartão do quarto. Seu quarto é o 504, no quinto andar. Precisa de mais alguma coisa?",no:"Alt er inkludert, og wi-fi-passordet står på romkortet. Rommet ditt er 504, i femte etasje. Trenger du noe mer?",c:[
+     {t:"Não, é só isso. Muito obrigado!",k:"good",n:"end"},
+     {t:"Não, obrigado. Boa noite pra você!",k:"good",n:"end"},
+     {t:"Nada.",k:"meh",fb:"«Nada» alene kan høres brått ut. Si heller «Não, é só isso, obrigado!».",n:"end"}]}
+  }},
+ {id:"praia",emo:"🏖️",title:"Småprat på stranda",desc:"Bli kjent med noen og avtal å møtes senere",who:"Juliana",start:"n1",
+  end:"Juliana: Até mais tarde! 😄",
+  nodes:{
+   n1:{pt:"Oi! Desculpa, você sabe que horas são?",no:"Hei! Unnskyld, vet du hva klokka er?",c:[
+     {t:"São três e meia.",k:"good",fb:"Riktig – klokkeslett over 1 står i flertall: são três e meia.",n:"n2"},
+     {t:"É três e meia.",k:"meh",fb:"Hun forstår deg, men korrekt er flertall: «São três e meia». (Bare «é uma hora» og «é meio-dia» har entall.)",n:"n2"},
+     {t:"Eu sou três horas.",k:"bad",fb:"«Eu sou três horas» = jeg er tre timer. Si «São três e meia»."}]},
+   n2:{pt:"Valeu! Você não é daqui, né? De onde você é?",no:"Takk! Du er ikke herfra, ikke sant? Hvor er du fra?",c:[
+     {t:"Não, sou da Noruega.",k:"good",n:"n3"},
+     {t:"Sou norueguês, mas moro em Oslo.",k:"good",fb:"Fint – og legg merke til: em Oslo (by uten artikkel), men na Noruega.",n:"n3"},
+     {t:"Eu sou de Noruega.",k:"bad",fb:"Noruega har artikkel: de + a = «da Noruega»."}]},
+   n3:{pt:"Nossa, Noruega! Deve ser muito frio lá, né? Tá gostando do calor?",no:"Jøss, Norge! Det må være veldig kaldt der, ikke sant? Liker du varmen?",c:[
+     {t:"Tô amando! Na Noruega agora tá fazendo uns cinco graus negativos.",k:"good",fb:"Supert! «Tô amando» = jeg elsker det – veldig naturlig.",n:"n4"},
+     {t:"Sim, é muito quente aqui. Eu gosto.",k:"meh",fb:"Forståelig, men om været nå bruker man estar: «Tá muito quente». Og svar gjerne med samme form: «Tô gostando muito!».",n:"n4"},
+     {t:"Eu estou gosto calor.",k:"bad",fb:"Bland ikke estar og gostar. Si «Tô gostando muito!» eller «Eu gosto muito do calor»."}]},
+   n4:{pt:"Haha, imagina! E quanto tempo você vai ficar no Brasil?",no:"Haha, tenk det! Og hvor lenge blir du i Brasil?",c:[
+     {t:"Vou ficar três semanas. Depois volto pra Noruega.",k:"good",n:"n5"},
+     {t:"Umas três semanas, até o Ano-Novo.",k:"good",fb:"«Umas três semanas» = ca. tre uker. Ano-Novo = nyttår.",n:"n5"},
+     {t:"Eu fico para três semanas.",k:"bad",fb:"Varighet = por eller ingenting: «Vou ficar (por) três semanas»."}]},
+   n5:{pt:"Que massa! Se quiser, mais tarde a gente vai num barzinho aqui perto. Bora?",no:"Så kult! Hvis du vil, skal vi på en bar her i nærheten senere. Blir du med?",c:[
+     {t:"Bora! Que horas?",k:"good",fb:"«Bora!» = kom igjen / la oss gjøre det!",n:"n6"},
+     {t:"Pode ser! Onde a gente se encontra?",k:"good",n:"n6"},
+     {t:"Sim, a gente vou!",k:"bad",fb:"A gente + 3. person: «a gente vai». Men her er det enklest å si «Bora!» eller «Pode ser!»."}]},
+   n6:{pt:"Lá pelas oito, aqui no quiosque. Fechou?",no:"Rundt åtte, her ved kiosken. Avtale?",c:[
+     {t:"Fechou! Até mais tarde.",k:"good",n:"end"},
+     {t:"Beleza, até as oito!",k:"good",fb:"«Até as oito!» = vi ses klokka åtte.",n:"end"},
+     {t:"Fechou! Eu sou lá às oito.",k:"bad",fb:"Hvor du befinner deg = estar: «Tô lá às oito» – eller bare «Fechou!»."}]}
+  }},
+ {id:"rua",emo:"🗺️",title:"Spørre om veien",desc:"Finn nærmeste apotek – og forstå svaret",who:"Moço na rua",start:"n0",
+  end:"Du fant apoteket! 💊",
+  nodes:{
+   n0:{pt:"(Du trenger et apotek. Du stopper en mann på gata.)",no:"",sys:true,c:[
+     {t:"Com licença, onde fica a farmácia mais perto?",k:"good",fb:"«Com licença» er perfekt for å få oppmerksomhet.",n:"n1"},
+     {t:"Desculpa, você sabe se tem uma farmácia aqui perto?",k:"good",fb:"Fint! «Tem … aqui perto?» = finnes det … i nærheten?",n:"n1"},
+     {t:"Ei! Farmácia onde?",k:"meh",fb:"Han forstår deg, men det høres brått ut. Start med «Com licença» eller «Desculpa».",n:"n1"}]},
+   n1:{pt:"Tem uma na rua de trás. Você segue reto, vira à direita na segunda rua e é logo ali, do lado da padaria.",no:"Det er et i gata bak. Du går rett frem, tar til høyre i den andre gata, og så er det like der, ved siden av bakeriet.",c:[
+     {t:"Desculpa, pode falar mais devagar?",k:"good",fb:"Helt riktig å be om det! Brasilianere gjentar gjerne.",n:"n1b"},
+     {t:"Reto e depois à direita na segunda rua. Entendi!",k:"good",fb:"Smart å gjenta – da kan han rette deg hvis du har misforstått.",n:"n2"},
+     {t:"Sim, sim.",k:"meh",fb:"Si heller «Entendi!» – eller gjenta hovedpunktene for å være sikker.",n:"n2"}]},
+   n1b:{pt:"Claro! Segue reto… vira à direita… na segunda rua. A farmácia fica do lado da padaria.",no:"Selvsagt! Gå rett frem … ta til høyre … i den andre gata. Apoteket ligger ved siden av bakeriet.",c:[
+     {t:"Ah, entendi. Muito obrigado!",k:"good",n:"n2"},
+     {t:"Beleza, valeu!",k:"good",n:"n2"},
+     {t:"Obrigado para a ajuda!",k:"bad",fb:"Takk for = obrigado por; por + a = «pela»: «Obrigado pela ajuda!»."}]},
+   n2:{pt:"De nada! É pertinho, uns cinco minutos a pé.",no:"Ingen årsak! Det er like i nærheten, ca. fem minutter å gå.",c:[
+     {t:"Que bom! Você sabe até que horas ela fica aberta?",k:"good",n:"n3"},
+     {t:"Valeu, tchau!",k:"good",n:"end"},
+     {t:"É longe para pé?",k:"bad",fb:"Han sa nettopp at det er like ved. Og til fots = «a pé», ikke «para pé»."}]},
+   n3:{pt:"Acho que até as dez. Boa sorte!",no:"Jeg tror til klokka ti. Lykke til!",c:[
+     {t:"Valeu! Tchau!",k:"good",n:"end"},
+     {t:"Fechou, obrigado!",k:"good",n:"end"},
+     {t:"Obrigado, eu sou na farmácia às dez.",k:"bad",fb:"Feil verb (sted = estar), og det gir ikke mening her. Si bare «Valeu! Tchau!»."}]}
+  }}
+];
+
+const TIPS = [
+ "«Na Noruega», «no Brasil», «no Rio» – men «em São Paulo» og «em Oslo». Land har artikkel, de fleste byer ikke.",
+ "«A gente» = vi, men verbet bøyes som han/hun: a gente vai, a gente tá, a gente quer.",
+ "«Em casa» = hjemme (uten artikkel).",
+ "Por = varighet/årsak (por uma hora, por causa de). Para/pra = mål/mottaker (pra praia, pra você).",
+ "Depois do almoço (de + o) – men depois de comer (foran verb).",
+ "«Tô», «tá», «tava» er muntlig for estou, está, estava – bruk dem fritt i samtale!",
+ "é = er, e = og. Én liten strek gjør hele forskjellen.",
+ "Det heter «por favor» – p-o-r. Og «muito» skrives med -ui-.",
+ "Bruk småord for å holde samtalen i gang: uhum, entendi, tá bom, beleza, sério?, nossa!",
+ "Brasilianere svarer ofte ved å gjenta verbet: — Você gosta? — Gosto! (i stedet for bare «sim»).",
+ "Gostar trenger alltid «de»: gosto de você, gosto do Brasil, gosto de dançar.",
+ "Tilstand og sted = estar (tô cansado, tô na praia). Identitet, yrke og opprinnelse = ser (sou norueguês).",
+ "«Tô com fome / sede / pressa / calor / dor de cabeça» – alt med estar com.",
+ "Ikke forstått? «Não entendi, pode repetir?» eller «Pode falar mais devagar?»"
+];
+/* ================= APP ================= */
+(function(){
+"use strict";
+const KEY = "ptPratica.v1";
+const $ = id => document.getElementById(id);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const MODES = {flash:"Kort", trans:"Oversett", quiz:"Quiz", dialog:"Rollespill"};
+
+/* ---------- lagring ---------- */
+function fresh(){ return {stats:{flash:{r:0,w:0},trans:{r:0,w:0},quiz:{r:0,w:0},dialog:{r:0,w:0}}, miss:{}, srs:{}, step:0}; }
+let S = fresh();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) { const d = JSON.parse(raw); S = Object.assign(fresh(), d); S.stats = Object.assign(fresh().stats, d.stats || {}); }
+} catch(e) { S = fresh(); }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+function hit(mode, id){ S.stats[mode].r++; const m = S.miss[mode + ":" + id]; if (m) m.ok = (m.ok || 0) + 1; save(); }
+function miss(mode, id, label, tag){
+  S.stats[mode].w++;
+  const k = mode + ":" + id;
+  const m = S.miss[k] || (S.miss[k] = {mode:mode, label:label, tag:tag || "", n:0, ok:0});
+  m.n++; m.label = label; m.t = Date.now(); save();
+}
+
+/* ---------- navigasjon ---------- */
+const renders = {};
+function show(view){
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + view));
+  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  if (renders[view]) renders[view]();
+  window.scrollTo(0, 0);
+  if (view === "trans") setTimeout(() => $("transInput").focus(), 50);
+}
+document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click", () => show(b.dataset.view)));
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => show(b.dataset.go)));
+
+/* ---------- hjem ---------- */
+function renderHome(){
+  const target = new Date(2026, 11, 1);
+  const now = new Date(); now.setHours(0,0,0,0);
+  const d = Math.round((target - now) / 86400000);
+  $("countdown").textContent = d > 0 ? d + " dager" : (d === 0 ? "I dag! Boa viagem! ✈️" : "Você tá no Brasil! 🇧🇷");
+}
+function newTip(){ $("dailyTip").textContent = TIPS[Math.floor(Math.random() * TIPS.length)]; }
+$("newTip").addEventListener("click", newTip);
+renders.home = renderHome;
+
+/* ---------- KORT (spaced repetition-lite) ---------- */
+const CARDS = FLASH.map((c, i) => ({id:"f" + i, no:c[0], pt:c[1], cat:c[2]}));
+const CATS = [...new Set(CARDS.map(c => c.cat))];
+const WEIGHT = [8, 4, 2, 1, .5, .25];   // boks 0 (ikke kunnet) … 5 (godt kjent)
+const NEW_W = 3;
+let curCard = null, curDir = "no-pt", recent = [];
+(function(){
+  const s = $("flashCat");
+  s.appendChild(new Option("Alle kategorier (" + CARDS.length + ")", ""));
+  CATS.forEach(c => s.appendChild(new Option(c + " (" + CARDS.filter(x => x.cat === c).length + ")", c)));
+})();
+function pool(){ const c = $("flashCat").value; return CARDS.filter(x => !c || x.cat === c); }
+function pickCard(){
+  const p = pool();
+  if (!p.length) return null;
+  // 1) kort du ikke kunne, som er "forfalt" (kommer igjen etter noen få kort)
+  const due = p.filter(c => { const r = S.srs[c.id]; return r && r.b === 0 && r.due <= S.step && c !== curCard; })
+               .sort((a, b) => S.srs[a.id].due - S.srs[b.id].due);
+  if (due.length) return due[0];
+  // 2) vektet tilfeldig – svake kort oftere, unngå de siste viste
+  const avoid = p.length > 4 ? recent : (curCard ? [curCard.id] : []);
+  let cands = p.filter(c => !avoid.includes(c.id));
+  if (!cands.length) cands = p;
+  const w = cands.map(c => { const r = S.srs[c.id]; return r ? WEIGHT[r.b] : NEW_W; });
+  let sum = w.reduce((a, b) => a + b, 0), x = Math.random() * sum;
+  for (let i = 0; i < cands.length; i++) { x -= w[i]; if (x <= 0) return cands[i]; }
+  return cands[cands.length - 1];
+}
+function showCard(){
+  curCard = pickCard();
+  const f = $("flash"); f.classList.remove("flipped");
+  if (!curCard) return;
+  recent.push(curCard.id); if (recent.length > 4) recent.shift();
+  const sel = $("flashDir").value;
+  curDir = sel === "mix" ? (Math.random() < .5 ? "no-pt" : "pt-no") : sel;
+  const toPt = curDir === "no-pt";
+  // vent til kortet har snudd tilbake før teksten byttes
+  setTimeout(() => {
+    $("flashFront").textContent = toPt ? curCard.no : curCard.pt;
+    $("flashBack").textContent = toPt ? curCard.pt : curCard.no;
+    $("flashLangF").textContent = toPt ? "🇳🇴 Norsk" : "🇧🇷 Português";
+    $("flashLangB").textContent = toPt ? "🇧🇷 Português" : "🇳🇴 Norsk";
+    $("flashCatLbl").textContent = curCard.cat;
+  }, f.dataset.init ? 180 : 0);
+  f.dataset.init = "1";
+  renderBoxes();
+}
+function renderBoxes(){
+  const p = pool(); let nw = 0, weak = 0, mid = 0, good = 0;
+  p.forEach(c => { const r = S.srs[c.id]; if (!r) nw++; else if (r.b === 0) weak++; else if (r.b < 3) mid++; else good++; });
+  const b = $("flashBoxes"); b.innerHTML = "";
+  [["Nye", nw, "b"], ["Må øves", weak, "r"], ["På vei", mid, "y"], ["Kan", good, ""]].forEach(([n, v, c]) => b.appendChild(el("span", "pill " + c, n + ": " + v)));
+}
+function flip(){ $("flash").classList.toggle("flipped"); }
+function answerCard(known){
+  if (!curCard) return;
+  S.step++;
+  const r = S.srs[curCard.id] || (S.srs[curCard.id] = {b:0, due:0, seen:0});
+  r.seen++;
+  const label = curCard.no + " → " + curCard.pt;
+  if (known) { r.b = Math.min(r.b + 1, 5); r.due = S.step + r.b * 6; hit("flash", curCard.id); }
+  else { r.b = 0; r.due = S.step + 3; miss("flash", curCard.id, label, "ordforråd"); }
+  save(); showCard();
+}
+$("flash").addEventListener("click", flip);
+$("flashYes").addEventListener("click", () => answerCard(true));
+$("flashNo").addEventListener("click", () => answerCard(false));
+$("flashCat").addEventListener("change", () => { recent = []; showCard(); });
+$("flashDir").addEventListener("change", showCard);
+document.addEventListener("keydown", e => {
+  if (!$("view-flash").classList.contains("active")) return;
+  if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); }
+  else if (e.key === "1") answerCard(false);
+  else if (e.key === "2") answerCard(true);
+});
+renders.flash = () => { if (!curCard) showCard(); else renderBoxes(); };
+
+/* ---------- OVERSETTELSE ---------- */
+const TR = TRANS.map((t, i) => Object.assign({id:"t" + i}, t));
+const RULES_A = [["está","tá"],["estou","tô"],["estava","tava"],["estão","tão"],["estamos","tamos"]];
+const RULES = [["para os","pros"],["para as","pras"],["para o","pro"],["para a","pra"],["para","pra"],["pra o","pro"],["pra a","pra"],["em um","num"],["em uma","numa"],["cê","você"]];
+function stripAcc(s){ return s.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+function applyRules(s, rules){
+  s = " " + s + " ";
+  rules.forEach(([a, b]) => { const A = " " + a + " ", B = " " + b + " "; while (s.indexOf(A) !== -1) s = s.replace(A, B); });
+  return s.trim();
+}
+function basic(s){
+  return s.toLowerCase().replace(/[’'`´]/g, "").replace(/[.,!?¿¡;:"“”«»()\-–—…\/]/g, " ").replace(/\s+/g, " ").trim();
+}
+function strict(s){ // aksenter beholdes
+  let x = applyRules(basic(s), RULES_A.concat(RULES));
+  return x.replace(/^eu /, "");
+}
+function loose(s){ // aksent-ufølsom
+  const ra = RULES_A.map(([a, b]) => [stripAcc(a), stripAcc(b)]);
+  const r = RULES.map(([a, b]) => [stripAcc(a), stripAcc(b)]);
+  let x = applyRules(stripAcc(basic(s)), ra.concat(r));
+  return x.replace(/^eu /, "");
+}
+function lev(a, b){
+  const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({length:n + 1}, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+function checkAnswer(input, answers){
+  const L = loose(input), St = strict(input);
+  if (!L) return {res:"empty"};
+  for (const a of answers) if (strict(a) === St) return {res:"ok", best:a};
+  for (const a of answers) if (loose(a) === L) return {res:"accent", best:a};
+  let best = answers[0], bd = Infinity;
+  answers.forEach(a => { const d = lev(loose(a), L); if (d < bd) { bd = d; best = a; } });
+  return {res:"bad", best:best};
+}
+let trList = [], trIdx = 0, trDone = false;
+(function(){
+  const s = $("transTag");
+  const tags = [...new Set(TR.map(t => t.tag))];
+  s.appendChild(new Option("Alle temaer (" + TR.length + ")", ""));
+  s.appendChild(new Option("⚠️ Mine svake punkter", "__weak"));
+  tags.forEach(t => s.appendChild(new Option(t + " (" + TR.filter(x => x.tag === t).length + ")", t)));
+})();
+function buildTr(){
+  const v = $("transTag").value;
+  let l;
+  if (v === "__weak") {
+    l = TR.filter(t => { const m = S.miss["trans:" + t.id]; return m && m.n > (m.ok || 0) - 1; });
+    if (!l.length) l = TR;
+  } else l = TR.filter(t => !v || t.tag === v);
+  trList = shuffle(l); trIdx = 0; showTr();
+}
+function showTr(){
+  if (trIdx >= trList.length) { trList = shuffle(trList); trIdx = 0; }
+  const t = trList[trIdx];
+  trDone = false;
+  $("transPrompt").textContent = t.no;
+  $("transInput").value = ""; $("transInput").disabled = false;
+  $("transFb").className = "feedback"; $("transFb").innerHTML = "";
+  $("transNext").style.display = "none"; $("transCheck").style.display = ""; $("transSkip").style.display = "";
+  $("transCount").textContent = (trIdx + 1) + " / " + trList.length;
+  $("transBar").style.width = (trIdx / trList.length * 100) + "%";
+}
+function markWords(input, best){
+  const words = new Set(loose(best).split(" "));
+  const frag = document.createDocumentFragment();
+  input.trim().split(/\s+/).forEach((w, i) => {
+    if (i) frag.appendChild(document.createTextNode(" "));
+    const lw = loose(w);
+    if (lw && !words.has(lw)) frag.appendChild(el("span", "mark", w)); else frag.appendChild(document.createTextNode(w));
+  });
+  return frag;
+}
+function doCheck(skip){
+  if (trDone) { trIdx++; showTr(); $("transInput").focus(); return; }
+  const t = trList[trIdx], inp = $("transInput").value;
+  const r = skip ? {res:"bad", best:t.a[0]} : checkAnswer(inp, t.a);
+  if (r.res === "empty") { $("transInput").focus(); return; }
+  trDone = true;
+  const fb = $("transFb"); fb.innerHTML = "";
+  let head;
+  if (r.res === "ok") { fb.className = "feedback show ok"; head = "✓ Riktig! Muito bem!"; hit("trans", t.id); }
+  else if (r.res === "accent") {
+    fb.className = "feedback show almost";
+    if (t.tag === "é/e") { head = "≈ Nesten! Men her er aksenten viktig – é (er) og e (og) er to forskjellige ord:"; miss("trans", t.id, t.no + " → " + t.a[0] + " (aksent)", t.tag); }
+    else { head = "✓ Riktig – men sjekk aksentene:"; hit("trans", t.id); }
+  }
+  else {
+    fb.className = "feedback show bad"; head = skip ? "Svaret er:" : "✗ Ikke helt.";
+    miss("trans", t.id, t.no + " → " + t.a[0], t.tag);
+  }
+  fb.appendChild(el("div", "", head));
+  if (r.res === "accent") {
+    const want = new Set(basic(r.best).split(" "));
+    const d = el("div", "muted", "Ditt svar: ");
+    const wantL = new Set(stripAcc(basic(r.best)).split(" "));
+    inp.trim().split(/\s+/).forEach((w, i) => { if (i) d.appendChild(document.createTextNode(" ")); const bw = basic(w); d.appendChild(bw && !want.has(bw) && wantL.has(stripAcc(bw)) ? el("span", "mark", w) : document.createTextNode(w)); });
+    fb.appendChild(d);
+  }
+  if (r.res === "bad" && !skip) {
+    const d = el("div", "muted", "Ditt svar: "); d.appendChild(markWords(inp, r.best)); fb.appendChild(d);
+  }
+  const shown = r.res === "bad" ? t.a[0] : r.best;
+  fb.appendChild(el("div", "ans", shown));
+  const others = t.a.filter(a => a !== shown);
+  if (others.length) fb.appendChild(el("div", "muted", "Også riktig: " + others.slice(0, 3).join(" · ")));
+  fb.appendChild(el("div", "tip", t.tip));
+  $("transCheck").style.display = "none"; $("transSkip").style.display = "none";
+  $("transNext").style.display = "";
+  $("transBar").style.width = ((trIdx + 1) / trList.length * 100) + "%";
+}
+$("transCheck").addEventListener("click", () => doCheck(false));
+$("transSkip").addEventListener("click", () => doCheck(true));
+$("transNext").addEventListener("click", () => doCheck(false));
+$("transInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); doCheck(false); } });
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && trDone && $("view-trans").classList.contains("active") && e.target.id !== "transInput") { e.preventDefault(); doCheck(false); }
+});
+$("transTag").addEventListener("change", buildTr);
+renders.trans = () => { if (!trList.length) buildTr(); };
+
+/* ---------- QUIZ ---------- */
+const QZ = QUIZ.map((q, i) => Object.assign({id:"q" + i}, q));
+let qList = [], qIdx = 0, qRight = 0, qAnswered = 0;
+function buildQuiz(){ qList = shuffle(QZ); qIdx = 0; qRight = 0; qAnswered = 0; showQ(); }
+function showQ(){
+  if (qIdx >= qList.length) { finishQuiz(); return; }
+  const q = qList[qIdx];
+  $("quizTag").textContent = q.tag;
+  $("quizCount").textContent = (qIdx + 1) + " / " + qList.length;
+  $("quizBar").style.width = (qIdx / qList.length * 100) + "%";
+  const qs = $("quizQ"); qs.innerHTML = "";
+  const parts = q.q.split("___");
+  qs.appendChild(document.createTextNode(parts[0]));
+  qs.appendChild(el("span", "gap", "\u00a0?\u00a0"));
+  qs.appendChild(document.createTextNode(parts.slice(1).join("___")));
+  $("quizHint").textContent = "";
+  const box = $("quizOpts"); box.innerHTML = "";
+  shuffle(q.o.map((o, i) => ({o:o, ok:i === 0}))).forEach(opt => {
+    const b = el("button", "opt", opt.o === "–" ? "– (ingenting)" : opt.o);
+    b.dataset.ok = opt.ok ? "1" : "0";
+    b.addEventListener("click", () => answerQ(b, opt.ok));
+    box.appendChild(b);
+  });
+  $("quizFb").className = "feedback"; $("quizFb").innerHTML = "";
+  $("quizNext").style.display = "none";
+  $("quizScore").textContent = qAnswered ? ("Denne runden: " + qRight + " av " + qAnswered) : "";
+}
+function answerQ(btn, ok){
+  const q = qList[qIdx];
+  document.querySelectorAll("#quizOpts .opt").forEach(b => { b.disabled = true; if (b.dataset.ok === "1") b.classList.add("correct"); });
+  qAnswered++;
+  const gap = document.querySelector("#quizQ .gap"); if (gap) gap.textContent = "\u00a0" + (q.o[0] === "–" ? "–" : q.o[0]) + "\u00a0";
+  const fb = $("quizFb"); fb.innerHTML = "";
+  if (ok) { qRight++; fb.className = "feedback show ok"; fb.appendChild(el("div", "", "✓ Riktig!")); hit("quiz", q.id); }
+  else {
+    btn.classList.add("wrong"); fb.className = "feedback show bad";
+    fb.appendChild(el("div", "", "✗ Riktig svar: " + q.o[0]));
+    miss("quiz", q.id, q.q.replace("___", "[" + q.o[0] + "]"), q.tag);
+  }
+  fb.appendChild(el("div", "tip", q.e));
+  $("quizNext").style.display = "";
+  $("quizScore").textContent = "Denne runden: " + qRight + " av " + qAnswered;
+  $("quizBar").style.width = ((qIdx + 1) / qList.length * 100) + "%";
+  $("quizNext").focus();
+}
+function finishQuiz(){
+  $("quizQ").textContent = "Ferdig! 🎉 " + qRight + " av " + qList.length + " riktige.";
+  $("quizHint").textContent = qRight / qList.length >= .8 ? "Muito bem! Ta en ny runde for å holde det ved like." : "Bra jobba! Se «Fremgang» for de svake punktene, og ta en ny runde.";
+  $("quizOpts").innerHTML = ""; $("quizFb").className = "feedback";
+  const b = el("button", "btn", "Ny runde"); b.addEventListener("click", buildQuiz); $("quizOpts").appendChild(b);
+  $("quizNext").style.display = "none"; $("quizTag").textContent = ""; $("quizCount").textContent = "";
+}
+$("quizNext").addEventListener("click", () => { qIdx++; showQ(); });
+renders.quiz = () => { if (!qList.length) buildQuiz(); };
+
+/* ---------- ROLLESPILL ---------- */
+let dlg = null, dNode = null, dScore = {ok:0, bad:0};
+(function(){
+  const list = $("scenList");
+  DIALOGS.forEach(d => {
+    const b = el("button", "scen");
+    b.appendChild(el("span", "emo", d.emo));
+    const t = el("span"); t.appendChild(el("b", "", d.title)); t.appendChild(el("br")); t.appendChild(el("span", "muted", d.desc));
+    b.appendChild(t);
+    b.dataset.id = d.id;
+    b.addEventListener("click", () => startDialog(d));
+    list.appendChild(b);
+  });
+})();
+function bubble(cls, who, text, tr){
+  const b = el("div", "bubble " + cls);
+  if (who) b.appendChild(el("span", "who", who));
+  b.appendChild(document.createTextNode(text));
+  if (tr) {
+    const s = el("span", "tr", tr); s.style.display = "none";
+    const btn = el("button", "trbtn", "Vis norsk");
+    btn.addEventListener("click", () => { const h = s.style.display === "none"; s.style.display = h ? "block" : "none"; btn.textContent = h ? "Skjul norsk" : "Vis norsk"; });
+    b.appendChild(btn); b.appendChild(s);
+  }
+  $("chat").appendChild(b);
+  return b;
+}
+function startDialog(d){
+  dlg = d; dScore = {ok:0, bad:0};
+  $("dialogPick").style.display = "none"; $("dialogPlay").style.display = "";
+  $("dialogTitle").textContent = d.emo + " " + d.title;
+  $("chat").innerHTML = "";
+  goNode(d.start);
+}
+function goNode(id){
+  const box = $("choices"); box.innerHTML = "";
+  if (id === "end") { endDialog(); return; }
+  dNode = dlg.nodes[id];
+  if (dNode.sys) bubble("sys", "", dNode.pt);
+  else bubble("npc", dlg.who, dNode.pt, dNode.no);
+  shuffle(dNode.c).forEach(ch => {
+    const b = el("button", "opt", ch.t);
+    b.addEventListener("click", () => choose(ch, b, id));
+    box.appendChild(b);
+  });
+  scrollChat();
+}
+function scrollChat(){ const c = $("choices"); if (c.scrollIntoView) try { c.scrollIntoView({behavior:"smooth", block:"end"}); } catch(e) {} }
+function choose(ch, btn, nodeId){
+  const old = document.querySelector("#chat .dfb.bad.pending"); if (old) old.remove();
+  const id = dlg.id + ":" + nodeId + ":" + ch.t;
+  if (ch.k === "bad") {
+    btn.classList.add("wrong"); btn.disabled = true;
+    const f = el("div", "dfb bad pending", "✗ " + ch.fb + " Prøv igjen.");
+    $("chat").appendChild(f);
+    dScore.bad++;
+    miss("dialog", id, dlg.title + ": «" + ch.t + "» – " + ch.fb, "rollespill");
+    scrollChat();
+    return;
+  }
+  $("choices").innerHTML = "";
+  bubble("me", "Você", ch.t);
+  if (ch.k === "meh") { $("chat").appendChild(el("div", "dfb meh", "≈ Forståelig, men: " + ch.fb)); dScore.ok++; miss("dialog", id, dlg.title + ": «" + ch.t + "» – " + ch.fb, "rollespill"); S.stats.dialog.w--; S.stats.dialog.r++; save(); }
+  else { if (ch.fb) $("chat").appendChild(el("div", "dfb good", "✓ " + ch.fb)); dScore.ok++; hit("dialog", id); }
+  setTimeout(() => goNode(ch.n), 350);
+}
+function endDialog(){
+  bubble("sys", "", dlg.end);
+  const tot = dScore.ok + dScore.bad;
+  $("chat").appendChild(el("div", "dfb good", "Ferdig! " + dScore.ok + " gode svar, " + dScore.bad + " feil underveis." + (dScore.bad === 0 ? " Perfeito! 🎉" : " Prøv igjen – du velger kanskje en annen vei neste gang.")));
+  const box = $("choices"); box.innerHTML = "";
+  const again = el("button", "btn", "Spill igjen"); again.addEventListener("click", () => startDialog(dlg));
+  const other = el("button", "btn secondary", "Velg en annen situasjon"); other.addEventListener("click", backToList);
+  box.appendChild(again); box.appendChild(other);
+  scrollChat();
+  void tot;
+}
+function backToList(){ $("dialogPlay").style.display = "none"; $("dialogPick").style.display = ""; }
+$("dialogBack").addEventListener("click", backToList);
+
+/* ---------- FREMGANG ---------- */
+function renderProg(){
+  const st = $("progStats"); st.innerHTML = "";
+  Object.keys(MODES).forEach(m => {
+    const s = S.stats[m], tot = s.r + s.w;
+    const d = el("div", "stat");
+    d.appendChild(el("div", "muted", MODES[m]));
+    d.appendChild(el("div", "big", tot ? Math.round(s.r / tot * 100) + " %" : "–"));
+    d.appendChild(el("div", "muted", s.r + " riktige · " + s.w + " feil"));
+    st.appendChild(d);
+  });
+  const known = CARDS.filter(c => S.srs[c.id] && S.srs[c.id].b >= 3).length;
+  const sd = el("div", "stat"); sd.appendChild(el("div", "muted", "Kort du kan godt"));
+  sd.appendChild(el("div", "big", known + " / " + CARDS.length)); sd.appendChild(el("div", "muted", "(kunne 3+ ganger på rad)")); st.appendChild(sd);
+
+  const ms = Object.values(S.miss);
+  const tags = {};
+  ms.forEach(m => { if (m.tag) tags[m.tag] = (tags[m.tag] || 0) + m.n; });
+  const tg = $("progTags"); tg.innerHTML = "";
+  const te = Object.entries(tags).sort((a, b) => b[1] - a[1]);
+  if (!te.length) tg.appendChild(el("p", "muted", "Ingen feil registrert ennå. Sett i gang! 💪"));
+  const max = te.length ? te[0][1] : 1;
+  te.forEach(([t, n]) => {
+    const r = el("div", "tagbar"); r.appendChild(el("span", "name", t));
+    const bar = el("div", "bar"), f = el("div"); f.style.width = (n / max * 100) + "%"; bar.appendChild(f); r.appendChild(bar);
+    r.appendChild(el("span", "muted", n + " feil")); tg.appendChild(r);
+  });
+  const wl = $("progWeak"); wl.innerHTML = "";
+  const top = ms.map(m => Object.assign({score:m.n - 0.5 * (m.ok || 0)}, m)).filter(m => m.score > 0).sort((a, b) => b.score - a.score || b.t - a.t).slice(0, 20);
+  if (!top.length) wl.appendChild(el("li", "muted", "Ingen svake punkter ennå."));
+  top.forEach(m => {
+    const li = el("li"); li.appendChild(el("span", "n", "×" + m.n));
+    const l = el("span", "lbl"); l.appendChild(el("span", "pill " + (m.mode === "flash" ? "b" : m.mode === "quiz" ? "y" : m.mode === "dialog" ? "" : "r"), MODES[m.mode]));
+    l.appendChild(document.createTextNode(" " + m.label));
+    if (m.ok) l.appendChild(el("span", "muted", " (riktig " + m.ok + " gang" + (m.ok > 1 ? "er" : "") + " siden)"));
+    li.appendChild(l); wl.appendChild(li);
+  });
+}
+$("progReset").addEventListener("click", () => {
+  if (!confirm("Vil du virkelig slette all fremgang?")) return;
+  S = fresh(); save(); curCard = null; trList = []; qList = [];
+  renderProg();
+});
+renders.prog = renderProg;
+
+/* ---------- start ---------- */
+newTip(); renderHome();
+window.__pratica = {checkAnswer:checkAnswer, loose:loose, strict:strict, counts:{flash:CARDS.length, trans:TR.length, quiz:QZ.length, dialog:DIALOGS.length}};
+})();
+</script>
+</body></html>
